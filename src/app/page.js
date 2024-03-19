@@ -1,95 +1,86 @@
-import Image from "next/image";
-import styles from "./page.module.css";
+'use client';
+import { useState, useEffect, useRef } from 'react';
+import styles from './page.module.css';
 
-export default function Home() {
+export default function Chat() {
+  const [messages, setMessages] = useState([]);
+  const [inputValue, setInputValue] = useState('');
+  const [isLoading, setIsLoading] = useState(false); // New state for loading animation
+  const chatContainerRef = useRef(null);
+
+  const handleInputChange = (e) => setInputValue(e.target.value);
+
+  // async
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const trimmedInput = inputValue.trim(); // Remove whitespace from both ends of the input value
+
+    if (!trimmedInput || isLoading) {
+      // Prevent submission if input is empty or only whitespace, or if it's currently loading
+      return;
+    }
+    // Add user message
+    setMessages((prev) => [...prev, { text: inputValue, sender: 'user' }]);
+    setIsLoading(true); // Set loading animation to true
+
+    try {
+      // Call the API to get the response (using the App Router)
+      const data = {
+        reply: `Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum`,
+      };
+      const delay = ms => new Promise(res => setTimeout(res, ms));
+      await delay(3000);
+
+      // Add bot response
+      setMessages((prev) => [...prev, { text: data.reply, sender: 'bot' }]);
+    } catch (error) {
+      console.error('Error:', error);
+    } finally {
+      setIsLoading(false); // Set loading animation to false
+      setInputValue(''); // Clear the input after sending
+    }
+  };
+
+  useEffect(() => {
+    if (chatContainerRef.current) {
+      chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
+    }
+  }, [messages]);
+
   return (
-    <main className={styles.main}>
-      <div className={styles.description}>
-        <p>
-          Get started by editing&nbsp;
-          <code className={styles.code}>src/app/page.js</code>
-        </p>
-        <div>
-          <a
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+    <div className={styles.container}>
+      <h1 className={styles.heading}>Chatbot</h1>
+      <div className={styles.chatContainer} ref={chatContainerRef}>
+        {messages.map((msg, idx) => (
+          <div
+            key={idx}
+            className={`${styles.messageContainer} ${
+              msg.sender === 'user' ? styles.userMessageContainer : styles.botMessageContainer
+            }`}
           >
-            By{" "}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className={styles.vercelLogo}
-              width={100}
-              height={24}
-              priority
-            />
-          </a>
-        </div>
+            <span className={styles.sender}>{msg.sender === 'user' ? 'User' : 'Assistant'}</span>
+            <div
+              className={`${styles.message} ${
+                msg.sender === 'user' ? styles.userMessage : styles.botMessage
+              }`}
+            >
+              {msg.text}
+            </div>
+          </div>
+        ))}
       </div>
-
-      <div className={styles.center}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
+      <form onSubmit={handleSubmit} className={styles.inputContainer}>
+        <textarea
+          type="text"
+          value={inputValue}
+          onChange={handleInputChange}
+          placeholder="Type your message..."
+          className={styles.input}
         />
-      </div>
-
-      <div className={styles.grid}>
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Docs <span>-&gt;</span>
-          </h2>
-          <p>Find in-depth information about Next.js features and API.</p>
-        </a>
-
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Learn <span>-&gt;</span>
-          </h2>
-          <p>Learn about Next.js in an interactive course with&nbsp;quizzes!</p>
-        </a>
-
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Templates <span>-&gt;</span>
-          </h2>
-          <p>Explore starter templates for Next.js.</p>
-        </a>
-
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Deploy <span>-&gt;</span>
-          </h2>
-          <p>
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
-      </div>
-    </main>
+        <button type="submit" className={styles.sendButton}>
+          {isLoading ? <div className={styles.loadingAnimation} /> : 'Send'}
+        </button>
+      </form>
+    </div>
   );
 }
