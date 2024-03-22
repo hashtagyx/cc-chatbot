@@ -1,12 +1,14 @@
-'use client';
-import { useState, useEffect, useRef } from 'react';
-import styles from './page.module.css';
+"use client";
+import { useState, useEffect, useRef } from "react";
+import styles from "./page.module.css";
 
 export default function Chat() {
   const [messages, setMessages] = useState([]);
-  const [inputValue, setInputValue] = useState('');
+  const [inputValue, setInputValue] = useState("");
   const [isLoading, setIsLoading] = useState(false); // New state for loading animation
   const chatContainerRef = useRef(null);
+
+  // const openai = new OpenAI({apiKey: process.env.OPENAI_API_KEY, dangerouslyAllowBrowser: true});
 
   const handleInputChange = (e) => setInputValue(e.target.value);
 
@@ -20,48 +22,71 @@ export default function Chat() {
       return;
     }
     // Add user message
-    setMessages((prev) => [...prev, { text: inputValue, sender: 'user' }]);
+    setMessages((prev) => [...prev, { text: inputValue, sender: "user" }]);
     setIsLoading(true); // Set loading animation to true
+    setInputValue(""); // Clear the input after sending
 
     try {
-      // Call the API to get the response (using the App Router)
-      const data = {
-        reply: `Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum`,
-      };
-      const delay = ms => new Promise(res => setTimeout(res, ms));
-      await delay(3000);
+      // Constructing the prompt for OpenAI API
+      const response = await fetch("/api", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          messages: [
+            {
+              role: "system",
+              content:
+                "You are a friendly Singaporean tour guide uncle. You're very familiar with all the nooks and crannies of Singapore, from the heartlands to the city centre. Your responses should be in Singlish, showcasing your warm and approachable personality. You're always eager to share the best local spots, hidden gems, and must-see attractions with visitors. When asked, you provide insightful and personalized recommendations for things to do, places to eat, and how to experience the true spirit of Singapore. Your advice is practical, taking into account local tips, budget options, and how to navigate the city like a local. Remember, your goal is to help visitors have a memorable and enjoyable time in Singapore, lah!",
+            },
+            { role: "user", content: trimmedInput },
+          ],
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to fetch from API');
+      }
+
+      const completion = await response.json();
+      const botResponse = completion.choices[0].message.content;
 
       // Add bot response
-      setMessages((prev) => [...prev, { text: data.reply, sender: 'bot' }]);
+      setMessages((prev) => [...prev, { text: botResponse, sender: "bot" }]);
     } catch (error) {
-      console.error('Error:', error);
+      console.error("Error:", error);
     } finally {
       setIsLoading(false); // Set loading animation to false
-      setInputValue(''); // Clear the input after sending
     }
   };
 
   useEffect(() => {
     if (chatContainerRef.current) {
-      chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
+      chatContainerRef.current.scrollTop =
+        chatContainerRef.current.scrollHeight;
     }
   }, [messages]);
 
   return (
     <div className={styles.container}>
-      <h1 className={styles.heading}>Chatbot</h1>
+      <h1 className={styles.heading}>SG Tour Guide Uncle</h1>
       <div className={styles.chatContainer} ref={chatContainerRef}>
         {messages.map((msg, idx) => (
           <div
             key={idx}
             className={`${styles.messageContainer} ${
-              msg.sender === 'user' ? styles.userMessageContainer : styles.botMessageContainer
+              msg.sender === "user"
+                ? styles.userMessageContainer
+                : styles.botMessageContainer
             }`}
           >
-            <span className={styles.sender}>{msg.sender === 'user' ? 'User' : 'Assistant'}</span>
+            <span className={styles.sender}>
+              {msg.sender === "user" ? "User" : "Tour Guide Uncle"}
+            </span>
             <div
               className={`${styles.message} ${
-                msg.sender === 'user' ? styles.userMessage : styles.botMessage
+                msg.sender === "user" ? styles.userMessage : styles.botMessage
               }`}
             >
               {msg.text}
@@ -78,7 +103,7 @@ export default function Chat() {
           className={styles.input}
         />
         <button type="submit" className={styles.sendButton}>
-          {isLoading ? <div className={styles.loadingAnimation} /> : 'Send'}
+          {isLoading ? <div className={styles.loadingAnimation} /> : "Send"}
         </button>
       </form>
     </div>
