@@ -5,8 +5,8 @@ export async function POST(req) {
   const { messages } = await req.json();
   try {
     const response = await openai.chat.completions.create({
-      // model: "gpt-3.5-turbo",
-      model: "ft:gpt-3.5-turbo-0125:personal:tour-guide:970fYmYV",
+      model: "gpt-3.5-turbo",
+      // model: "ft:gpt-3.5-turbo-0125:personal:tour-guide:970fYmYV",
       messages,
     });
 
