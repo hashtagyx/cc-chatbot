@@ -99,7 +99,7 @@
 }
 
 @media (max-width: 768px) { /* Adjust the breakpoint as needed */
-  .input, .sendButton {
+  .sendButton {
     /* Increase width for mobile to ensure they are more accessible */
     width: 90%; /* Adjust width to fit mobile screens better */
     /* You may want to adjust padding for mobile as well */
