@@ -101,7 +101,8 @@
 @media (max-width: 768px) { /* Adjust the breakpoint as needed */
   .sendButton {
     /* Scale the button size up or down for mobile, if needed */
-    padding: 0.6em 1em; /* Adjust as needed */
+    padding: 0.6em 0.8em; /* Adjust as needed */
+    font-size: smaller;
   }
 }
 
