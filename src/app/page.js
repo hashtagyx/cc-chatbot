@@ -8,8 +8,6 @@ export default function Chat() {
   const [isLoading, setIsLoading] = useState(false); // New state for loading animation
   const chatContainerRef = useRef(null);
 
-  // const openai = new OpenAI({apiKey: process.env.OPENAI_API_KEY, dangerouslyAllowBrowser: true});
-
   const handleInputChange = (e) => setInputValue(e.target.value);
 
   // async
