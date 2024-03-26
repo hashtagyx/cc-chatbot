@@ -93,25 +93,15 @@
   border-radius: 4px;
   cursor: pointer;
   transition: background-color 0.3s ease;
-  padding-left: 1.2em;
-  padding-right: 1.2em;
-  /* height: 5vh; */
-  /* width: 5vw; */
+  height: 5vh;
+  width: 5vw;
 }
 
-/* For the loading state, you might want to hide the text instead of removing it to maintain the button width */
-.sendButton.loading {
-  justify-content: center; /* Keep the loading animation centered */
-  /* Visually hide the text, but it still occupies space */
-  color: transparent;
-}
 
 @media (max-width: 768px) { /* Adjust the breakpoint as needed */
   .sendButton {
     /* Scale the button size up or down for mobile, if needed */
-    padding-left: 0.6em;
-    padding-right: 0.6em;
-    font-size: x-small;
+    width: 10%;
   }
 }
 

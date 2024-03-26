@@ -100,7 +100,7 @@ export default function Chat() {
           placeholder="Type your message..."
           className={styles.input}
         />
-        <button type="submit" className={`${styles.sendButton} ${isLoading ? styles.loading : ''}`}>
+        <button type="submit" className={styles.sendButton}>
           {isLoading ? <div className={styles.loadingAnimation} /> : "Send"}
         </button>
       </form>
