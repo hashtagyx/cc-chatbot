@@ -93,7 +93,8 @@
   border-radius: 4px;
   cursor: pointer;
   transition: background-color 0.3s ease;
-  padding: 0.8em 1.2em;
+  padding-left: 1.2em;
+  padding-right: 1.2em;
   /* height: 5vh; */
   /* width: 5vw; */
 }
@@ -108,7 +109,8 @@
 @media (max-width: 768px) { /* Adjust the breakpoint as needed */
   .sendButton {
     /* Scale the button size up or down for mobile, if needed */
-    padding: 0.4em 0.6em; /* Adjust as needed */
+    padding-left: 0.6em;
+    padding-right: 0.6em;
     font-size: x-small;
   }
 }
