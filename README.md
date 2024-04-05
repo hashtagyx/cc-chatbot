@@ -37,6 +37,3 @@ SG Tour Guide Uncle is a conversational chatbot designed to enhance the tourist 
    npm run dev
    ```
 Open http://localhost:3000 with your browser to see the result.
-
-Hi uncle, I'm visiting Singapore for a few days and I like nature. Any recommendations?
-I heard Singapore is extremely sunny. Do you have any recommendations for cold desserts after I visit those places?
