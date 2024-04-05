@@ -7,10 +7,39 @@ export default function Chat() {
   const [inputValue, setInputValue] = useState("");
   const [isLoading, setIsLoading] = useState(false); // New state for loading animation
   const chatContainerRef = useRef(null);
+  const initialRender = useRef(true);
 
   const handleInputChange = (e) => setInputValue(e.target.value);
 
-  // async
+  // Load chat logs from localStorage on component mount
+  useEffect(() => {
+    const storedLogs = localStorage.getItem("chatLogs");
+    console.log("Mounted");
+    console.log(storedLogs);
+    if (storedLogs) {
+      setMessages(JSON.parse(storedLogs));
+    }
+  }, []);
+
+  // Save chat logs to localStorage on every message update
+  useEffect(() => {
+    if (initialRender.current) {
+      console.log("initialRender");
+      initialRender.current = false;
+    } else {
+      localStorage.setItem("chatLogs", JSON.stringify(messages));
+    }
+  }, [messages]);
+
+  // Clear chat history
+  const clearChat = () => {
+    if (window.confirm("Are you sure you want to clear the chat?")) {
+      setMessages([]);
+      localStorage.removeItem("chatLogs");
+    }
+  };
+
+  // on submitting new chat
   const handleSubmit = async (e) => {
     e.preventDefault();
     const trimmedInput = inputValue.trim(); // Remove whitespace from both ends of the input value
@@ -44,7 +73,7 @@ export default function Chat() {
       });
 
       if (!response.ok) {
-        throw new Error('Failed to fetch from API');
+        throw new Error("Failed to fetch from API");
       }
 
       const completion = await response.json();
@@ -104,6 +133,9 @@ export default function Chat() {
           {isLoading ? <div className={styles.loadingAnimation} /> : "Send"}
         </button>
       </form>
+      <button onClick={clearChat} className={styles.clearButton}>
+        Clear Chat
+      </button>
     </div>
   );
 }

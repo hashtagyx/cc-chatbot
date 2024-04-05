@@ -120,3 +120,19 @@
     transform: rotate(360deg);
   }
 }
+
+.clearButton {
+  background-color: #dc3545; /* Red color for the button */
+  color: #fff; /* White text color */
+  border: none; /* Remove default button border */
+  border-radius: 4px; /* Rounded corners */
+  padding: 0.5rem 1rem; /* Add some padding */
+  font-size: 1rem; /* Adjust font size as needed */
+  cursor: pointer; /* Change cursor to pointer on hover */
+  margin-bottom: 1rem; /* Add some space between the input and the button */
+  transition: background-color 0.3s ease; /* Add a smooth transition effect */
+}
+
+.clearButton:hover {
+  background-color: #c82333; /* Darker shade of red on hover */
+}
